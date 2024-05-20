@@ -4,3 +4,4 @@ matplotlib==1.11
 pandas==1.11
 astropy==6.0
 torch==2.0.1
+efficient_kan
