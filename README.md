@@ -12,6 +12,8 @@ The compact data package for the Universe manuscript is available on Zenodo:
 
 https://doi.org/10.5281/zenodo.20782050
 
+The matching code snapshot is the repository tag `universe-review-v1`.
+
 It contains the continuum mask, training histories, validation metrics, APOGEE
 fit summaries, trained checkpoints, and revision diagnostic tables used by the
 paper. The original APOGEE DR17 spectra and The Payne synthetic spectra should
