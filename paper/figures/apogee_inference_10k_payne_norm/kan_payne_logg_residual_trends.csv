@@ -1,5 +1,0 @@
-model,residual,x,x_unit,n,spearman_rho,spearman_pvalue,linear_slope_dex_per_xunit,linear_intercept
-KAN-Payne,logg_fit_minus_aspcap,ASPCAP_Teff,K,9117,0.22039059583776419,nan,0.0001679169939301502,-0.563194528878398
-KAN-Payne,logg_fit_minus_aspcap,ASPCAP_logg,dex,9117,0.05921530033814013,nan,0.03794102134363276,0.12181611892019846
-KAN-Payne,logg_fit_minus_aspcap,ASPCAP_Fe_H,dex,9117,-0.03938627805830719,nan,-0.03455743722692041,0.19741629685160608
-KAN-Payne,logg_fit_minus_aspcap,median_snr,,9117,-0.09031386867147394,nan,-0.0010357952888838521,0.3389812661823002
