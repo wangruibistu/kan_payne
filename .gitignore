@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+.DS_Store
 
 # C extensions
 *.so
@@ -151,6 +152,26 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+# Local APOGEE/Payne data products
+data/raw/
+data/processed/
+data/external/
+data/manifests/*.csv
+data/manifests/*.json
+
+# Local release/data packages
+zenodo_package/
+
+# LaTeX build byproducts; keep source, references, figures, and PDF
+paper/*.aux
+paper/*.bbl
+paper/*.blg
+paper/*.log
+paper/*.out
+paper/*.synctex.gz
+paper/*.tex.bak
+paper/MDPI_template_ACS/
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can

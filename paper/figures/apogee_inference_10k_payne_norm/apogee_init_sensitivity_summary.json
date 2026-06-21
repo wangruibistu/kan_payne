@@ -1,0 +1,94 @@
+{
+  "residuals": [
+    {
+      "aspcap_init_mad_sigma": 117.8786392211914,
+      "aspcap_init_median": -6.305419921875,
+      "label": "Teff",
+      "midpoint_init_mad_sigma": 108.3807373046875,
+      "midpoint_init_median": -9.0556640625,
+      "midpoint_minus_aspcap_init_mad_sigma": 14.618595123291016,
+      "midpoint_minus_aspcap_init_median": 0.031494140625,
+      "model": "KAN-Payne",
+      "n": 1000,
+      "unit": "K"
+    },
+    {
+      "aspcap_init_mad_sigma": 0.21136502921581268,
+      "aspcap_init_median": 0.23984992504119873,
+      "label": "logg",
+      "midpoint_init_mad_sigma": 0.221551775932312,
+      "midpoint_init_median": 0.2535284757614136,
+      "midpoint_minus_aspcap_init_mad_sigma": 0.01911916956305504,
+      "midpoint_minus_aspcap_init_median": 0.0004805326461791992,
+      "model": "KAN-Payne",
+      "n": 1000,
+      "unit": "dex"
+    },
+    {
+      "aspcap_init_mad_sigma": 0.056279506534338,
+      "aspcap_init_median": 0.04694453626871109,
+      "label": "Fe_H",
+      "midpoint_init_mad_sigma": 0.059141892939805984,
+      "midpoint_init_median": 0.04458874464035034,
+      "midpoint_minus_aspcap_init_mad_sigma": 0.011244664900004864,
+      "midpoint_minus_aspcap_init_median": 8.940696716308594e-08,
+      "model": "KAN-Payne",
+      "n": 1000,
+      "unit": "dex"
+    },
+    {
+      "aspcap_init_mad_sigma": 121.06138610839844,
+      "aspcap_init_median": -41.2032470703125,
+      "label": "Teff",
+      "midpoint_init_mad_sigma": 141.84239196777344,
+      "midpoint_init_median": -60.32373046875,
+      "midpoint_minus_aspcap_init_mad_sigma": 125.40095520019531,
+      "midpoint_minus_aspcap_init_median": -25.843994140625,
+      "model": "Payne-MLP",
+      "n": 1000,
+      "unit": "K"
+    },
+    {
+      "aspcap_init_mad_sigma": 0.23553714156150818,
+      "aspcap_init_median": 0.15781795978546143,
+      "label": "logg",
+      "midpoint_init_mad_sigma": 0.23464062809944153,
+      "midpoint_init_median": 0.18945026397705078,
+      "midpoint_minus_aspcap_init_mad_sigma": 0.16317880153656006,
+      "midpoint_minus_aspcap_init_median": 0.030742168426513672,
+      "model": "Payne-MLP",
+      "n": 1000,
+      "unit": "dex"
+    },
+    {
+      "aspcap_init_mad_sigma": 0.10083112120628357,
+      "aspcap_init_median": 0.07163344323635101,
+      "label": "Fe_H",
+      "midpoint_init_mad_sigma": 0.10492894798517227,
+      "midpoint_init_median": 0.0769338458776474,
+      "midpoint_minus_aspcap_init_mad_sigma": 0.06659869849681854,
+      "midpoint_minus_aspcap_init_median": 0.0035424232482910156,
+      "model": "Payne-MLP",
+      "n": 1000,
+      "unit": "dex"
+    }
+  ],
+  "summary": [
+    {
+      "aspcap_init_chi2_median": 3.922412872314453,
+      "aspcap_init_mae_x1e4_median": 142.3057861328125,
+      "midpoint_init_chi2_median": 3.911978244781494,
+      "midpoint_init_mae_x1e4_median": 142.54483032226562,
+      "model": "KAN-Payne",
+      "n_common_success": 1000
+    },
+    {
+      "aspcap_init_chi2_median": 3.9547228813171387,
+      "aspcap_init_mae_x1e4_median": 143.58645629882812,
+      "midpoint_init_chi2_median": 3.951171398162842,
+      "midpoint_init_mae_x1e4_median": 144.28363037109375,
+      "model": "Payne-MLP",
+      "n_common_success": 1000
+    }
+  ]
+}
