@@ -6,6 +6,17 @@ emulator in The Payne-style spectral modeling with Kolmogorov-Arnold Networks
 TransformerPayne on theoretical APOGEE-like spectra and on APOGEE DR17 stellar
 parameter inference.
 
+## Manuscript Data
+
+The compact data package for the Universe manuscript is available on Zenodo:
+
+https://doi.org/10.5281/zenodo.20782050
+
+It contains the continuum mask, training histories, validation metrics, APOGEE
+fit summaries, trained checkpoints, and revision diagnostic tables used by the
+paper. The original APOGEE DR17 spectra and The Payne synthetic spectra should
+be downloaded from their public upstream archives.
+
 ## Current Workflow
 
 This repository now has two reproducible data paths:
