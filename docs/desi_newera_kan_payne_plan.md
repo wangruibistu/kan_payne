@@ -9,16 +9,17 @@ The uploaded PDF is the NewEra model-grid paper, not the grid data itself. The
 paper states that the grid contains 37,438 LTE PHOENIX/1D models covering
 2300-12000 K, log g from 0.0 to 6.0, [M/H] from -4.0 to +0.5, and additional
 alpha variations for part of the metallicity range. The data products are
-distributed as HDF5 files and as low-resolution archive products. For a first
-DESI experiment, the low-resolution spectra from 2500 Angstrom to 2.5 micron
-with 0.1 Angstrom sampling are the practical starting point because DESI covers
-roughly the optical 3600-9800 Angstrom range at R of a few thousand.
+distributed as HDF5 HSR files and as low-resolution archive products. The
+low-resolution archive is useful for fast smoke tests, but the DESI production
+path should use the HSR HDF5 spectra. The emulator should represent the
+rest-frame synthetic spectrum at sampling finer than the DESI native pixel grid;
+the DESI resolution matrix should then be applied during likelihood evaluation.
 
 Required downloads from the NewEra repository:
 
 - `list_of_available_NewEra_models.txt`
 - `get_NewEra_from_FDR.py`
-- either a selected set of HDF5 spectra or the low-resolution archive
+- either a selected set of HDF5 HSR spectra or, for smoke testing only, the low-resolution archive
   `PHOENIX-NewEra-LowRes-SPECTRA.tar.gz`
 
 The first pilot should not download every product blindly. Start with a
@@ -27,17 +28,30 @@ conversion and training pipeline is verified.
 
 ## Synthetic Grid Conversion
 
-The conversion entry point is:
+First build a filtered HSR download manifest:
+
+```bash
+python scripts/desi_build_newera_hsr_manifest.py \
+  --catalog /home/wangrui/data/newera/metadata/list_of_available_NewEraV3_models.txt \
+  --output-dir /home/wangrui/data/newera/hsr/manifests/fgk_pilot \
+  --teff-range 4500,7000 \
+  --logg-range 1.0,5.0 \
+  --mh-range -2.5,0.5 \
+  --alpha-range -0.2,0.6 \
+  --max-files 128
+```
+
+After downloading the manifest URLs, convert the HSR files:
 
 ```bash
 python scripts/desi_prepare_newera_grid.py \
-  --input-root data/external/newera/lowres_extracted \
-  --glob "**/*" \
+  --input-root /home/wangrui/data/newera/hsr/fgk_pilot \
+  --glob "**/*.h5" \
   --output data/processed/desi_newera_grid.npz \
   --wave-min 3600 \
   --wave-max 9800 \
-  --wave-step 1.0 \
-  --target-resolution 3000 \
+  --wave-step 0.4 \
+  --target-resolution 0 \
   --continuum-window 301 \
   --teff-range 3500,8000 \
   --logg-range 0,5 \
@@ -52,18 +66,19 @@ with labels:
 Teff, logg, M_H, alpha_M
 ```
 
-The script performs a first-pass DESI-like preprocessing:
+The script performs synthetic-grid preprocessing:
 
 - select the 3600-9800 Angstrom wavelength range,
 - interpolate onto a uniform optical grid,
-- apply approximate Gaussian smoothing to a target resolving power,
+- keep the synthetic line profile unsmoothed when `--target-resolution 0`,
 - divide a running-median pseudo-continuum,
 - split the synthetic grid into train, validation, and test subsets.
 
-This is a pilot-level approximation. A production DESI catalog should replace
-the single-resolution smoothing with DESI camera-dependent line-spread
-functions and should use the same continuum normalization for synthetic and
-observed spectra.
+The observed-spectrum likelihood should convolve the emulator prediction with
+the DESI camera-dependent line-spread functions before comparing with coadd
+fluxes. The single-spectrum implementation is
+`scripts/desi_fit_one_with_resolution.py`; the same logic should be batched
+before a large DESI catalog is attempted.
 
 ## Emulator Training
 
@@ -155,4 +170,3 @@ The current APOGEE paper should be completed first. It establishes the
 KAN-Payne method and validates the architecture against Payne-MLP and
 TransformerPayne. The DESI work can then become the natural large-survey
 application paper.
-

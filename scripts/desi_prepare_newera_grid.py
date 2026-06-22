@@ -109,7 +109,9 @@ def parse_newera_labels(path: Path) -> dict[str, float] | None:
             lower,
         )
         if match:
-            logg = logg if logg is not None else float(match.group(1))
+            # NewEra/PHOENIX HSR filenames store -logg after Teff, e.g.
+            # lte05000-3.50-0.0... means logg=3.50 and [M/H]=-0.0.
+            logg = logg if logg is not None else -float(match.group(1))
             mh = mh if mh is not None else float(match.group(2))
 
     if teff is None or logg is None or mh is None:
@@ -136,9 +138,8 @@ def _read_hdf5(path: Path):
             if wave_key in handle and flux_key in handle:
                 wave = np.asarray(handle[wave_key], dtype=float)
                 flux = np.asarray(handle[flux_key], dtype=float)
-                # NewEra HDF5 stores log10 flux for these spectrum groups.
-                if np.nanmedian(flux) < 0.0:
-                    flux = 10.0 ** flux
+                # NewEra HSR HDF5 stores log10 flux for these spectrum groups.
+                flux = 10.0 ** flux
                 return wave, flux
     raise KeyError(f"{path} does not contain a recognized NewEra spectrum group")
 

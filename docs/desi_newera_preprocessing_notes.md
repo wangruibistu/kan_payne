@@ -1,6 +1,6 @@
 # DESI + NewEra KAN-Payne Preprocessing Notes
 
-This note records the working choices for using NewEra V3 LowRes spectra to train
+This note records the working choices for using NewEra V3 spectra to train
 KAN-Payne and infer DESI DR1 MWS stellar parameters.
 
 ## Data Format
@@ -20,10 +20,14 @@ parameters are retained only for comparison.
 
 ## Current Processing Choices
 
-The training grid is built on a fixed rest-frame wavelength grid, currently
-`3600-9800 A` with `1 A` spacing. NewEra spectra are continuum-normalized with a
-running median and convolved to a conservative approximate resolving power,
-default `R=2000`.
+The preferred production path is to train the emulator from the HSR HDF5 spectra
+without applying a fixed DESI-like smoothing kernel during grid preparation
+(`--target-resolution 0`). The training grid is still built on a fixed
+rest-frame wavelength grid, but the wavelength step should be finer than the
+DESI native sampling, for example `0.4 A` over `3600-9800 A` for pilot runs. NewEra
+spectra are pseudo-continuum-normalized with a running median. The DESI
+instrumental resolution is then applied during observed-spectrum fitting through
+the per-target `B_RESOLUTION`, `R_RESOLUTION`, and `Z_RESOLUTION` matrices.
 
 Observed DESI spectra are corrected to the stellar rest frame with
 `wave_rest = wave_observed / (1 + RV_ADOP / c)`. The `B`, `R`, and `Z` arms are
@@ -47,10 +51,11 @@ nuisance terms or masked continuum anchor pixels.
 
 Resolution mismatch is the second major risk. DESI resolution changes with
 wavelength, camera, fiber, and exposure history; the coadd files include
-resolution matrices. The current code uses a conservative common-resolution
-approximation. A more exact production version should convolve each synthetic
-spectrum with the DESI resolution matrix, or downgrade both theory and data to a
-common resolution lower than the worst DESI resolving power in the fitted range.
+resolution matrices. The initial low-resolution pilot used a conservative
+common-resolution approximation, which over-smoothed the theory relative to many
+DESI R/Z-arm pixels. The revised path keeps the synthetic emulator at higher
+sampling and convolves the model spectrum with the DESI resolution matrix in the
+likelihood calculation.
 
 Radial velocities must be applied before interpolation. The current pipeline
 uses MWS `RV_ADOP`. For low-quality or problematic RVs, fit residuals near narrow
@@ -59,11 +64,16 @@ flag large `RV_ERR`, failed SP/RVS fits, and high chi-square cases.
 
 ## Relevant Code
 
+- `scripts/desi_build_newera_hsr_manifest.py`: builds filtered NewEra HSR HDF5
+  download manifests for smoke tests and pilot grids.
 - `scripts/desi_prepare_newera_grid.py`: parses NewEra V3 LowRes/GAIA-format
-  archives or HDF5 files and writes a `PayneGrid` NPZ.
+  archives or HSR HDF5 files and writes a `PayneGrid` NPZ.
 - `scripts/run_desi_newera_kan_payne_pipeline.sh`: runs grid preparation,
   KAN-Payne training, validation, DESI pilot preprocessing, and label fitting.
 - `scripts/desi_prepare_observed_spectra.py`: reads DESI coadd FITS files,
   applies RV correction, per-arm normalization, and writes observed NPZ.
 - `scripts/payne_fit_observed_spectra.py`: generic observed-spectrum label
   optimizer for 4-label NewEra or 25-label APOGEE checkpoints.
+- `scripts/desi_fit_one_with_resolution.py`: single-spectrum DESI fitter that
+  applies `B/R/Z_RESOLUTION` matrices to the emulator prediction before
+  computing chi-square.

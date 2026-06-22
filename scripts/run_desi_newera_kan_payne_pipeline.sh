@@ -9,7 +9,9 @@ DATA_DIR="${DATA_DIR:-/home/wangrui/data}"
 NEWERA_TAR="${NEWERA_TAR:-${DATA_DIR}/newera/lowres/PHOENIX-NewEraV3-LowRes-SPECTRA.tar.gz}"
 NEWERA_ADD="${NEWERA_ADD:-${DATA_DIR}/newera/lowres/PHOENIX-NewEraV3-add001-LowRes-SPECTRA.Z+0.5.txt}"
 NEWERA_EXTRACT="${NEWERA_EXTRACT:-${DATA_DIR}/newera/lowres/extracted_v3}"
+NEWERA_GLOB="${NEWERA_GLOB:-**/*.txt}"
 RUN_DIR="${RUN_DIR:-data/processed/desi_newera_kan_payne_$(date +%Y%m%d_%H%M%S)}"
+GRID_NAME="${GRID_NAME:-desi_newera_v3_grid.npz}"
 MODEL="${MODEL:-kan_payne}"
 DEVICE="${DEVICE:-cuda}"
 EPOCHS="${EPOCHS:-1000}"
@@ -20,7 +22,7 @@ MAX_NEWERA_SPECTRA="${MAX_NEWERA_SPECTRA:-}"
 WAVE_MIN="${WAVE_MIN:-3600}"
 WAVE_MAX="${WAVE_MAX:-9800}"
 WAVE_STEP="${WAVE_STEP:-1.0}"
-TARGET_RESOLUTION="${TARGET_RESOLUTION:-2000}"
+TARGET_RESOLUTION="${TARGET_RESOLUTION:-0}"
 CONTINUUM_WINDOW="${CONTINUUM_WINDOW:-301}"
 SMOOTH_OBSERVED_SIGMA_PIX="${SMOOTH_OBSERVED_SIGMA_PIX:-0}"
 DESI_SELECTED="${DESI_SELECTED:-${DATA_DIR}/desi/dr1/healpix_snr30_all/pilot_top_healpix_10k/selected_targets.csv}"
@@ -33,19 +35,19 @@ FIT_PIXELS="${FIT_PIXELS:-2048}"
 
 mkdir -p "${RUN_DIR}"/{logs,emulators,eval,desi}
 
-if [[ ! -d "${NEWERA_EXTRACT}" ]]; then
+if [[ ! -d "${NEWERA_EXTRACT}" && -f "${NEWERA_TAR}" ]]; then
   mkdir -p "${NEWERA_EXTRACT}"
   tar -xzf "${NEWERA_TAR}" -C "${NEWERA_EXTRACT}"
 fi
-if [[ -f "${NEWERA_ADD}" ]]; then
+if [[ -n "${NEWERA_ADD}" && -f "${NEWERA_ADD}" && "${NEWERA_GLOB}" == *".txt"* ]]; then
   cp -n "${NEWERA_ADD}" "${NEWERA_EXTRACT}/" || true
 fi
 
-GRID="${RUN_DIR}/desi_newera_v3_lowres_grid.npz"
+GRID="${RUN_DIR}/${GRID_NAME}"
 GRID_ARGS=(
   scripts/desi_prepare_newera_grid.py
   --input-root "${NEWERA_EXTRACT}"
-  --glob "**/*.txt"
+  --glob "${NEWERA_GLOB}"
   --output "${GRID}"
   --wave-min "${WAVE_MIN}"
   --wave-max "${WAVE_MAX}"
