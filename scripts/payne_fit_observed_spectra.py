@@ -78,7 +78,7 @@ def _checkpoint_model(checkpoint_path: str | Path, device):
 
     from kan_payne.payne_emulators import build_emulator
 
-    checkpoint = torch.load(checkpoint_path, map_location=device)
+    checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=False)
     config = dict(checkpoint["model_config"])
     model, _ = build_emulator(
         config["model"],

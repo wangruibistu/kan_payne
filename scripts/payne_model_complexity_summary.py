@@ -55,7 +55,7 @@ def main():
     rows = []
     for checkpoint_path in args.checkpoint:
         path = Path(checkpoint_path)
-        checkpoint = torch.load(path, map_location="cpu")
+        checkpoint = torch.load(path, map_location="cpu", weights_only=False)
         config = dict(checkpoint["model_config"])
         state = checkpoint["model_state_dict"]
         n_tensors = len(state)

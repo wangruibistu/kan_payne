@@ -110,7 +110,7 @@ def main() -> None:
     grid = load_payne_grid(args.grid)
     idx = _split_indices(grid, args.split)
     device = _choose_device(args.device)
-    checkpoint = torch.load(args.checkpoint, map_location=device)
+    checkpoint = torch.load(args.checkpoint, map_location=device, weights_only=False)
     config = dict(checkpoint["model_config"])
     model_name = config["model"]
     model, _ = build_emulator(
