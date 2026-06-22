@@ -23,6 +23,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--mh-step", type=float, default=0.5, help="Keep [M/H] multiples of this step; 0 disables.")
     parser.add_argument("--alpha-values", default="-0.2,0.0,0.2,0.4,0.6")
     parser.add_argument("--max-files", type=int, default=None)
+    parser.add_argument(
+        "--selection",
+        choices=("first", "spread"),
+        default="first",
+        help="How to apply --max-files after filtering. 'spread' samples the sorted grid evenly.",
+    )
     parser.add_argument("--stride", type=int, default=1, help="Keep every Nth row after sorting; useful for smoke tests.")
     return parser.parse_args()
 
@@ -117,7 +123,17 @@ def main() -> None:
     if args.stride > 1:
         selected = selected[:: args.stride]
     if args.max_files is not None:
-        selected = selected[: args.max_files]
+        if args.selection == "spread" and args.max_files < len(selected):
+            if args.max_files <= 0:
+                selected = []
+            elif args.max_files == 1:
+                selected = [selected[len(selected) // 2]]
+            else:
+                scale = (len(selected) - 1) / float(args.max_files - 1)
+                indices = [round(i * scale) for i in range(args.max_files)]
+                selected = [selected[index] for index in indices]
+        else:
+            selected = selected[: args.max_files]
 
     out_dir = Path(args.output_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -147,6 +163,7 @@ def main() -> None:
         "logg_step": args.logg_step,
         "mh_step": args.mh_step,
         "max_files": args.max_files,
+        "selection": args.selection,
         "stride": args.stride,
     }
     summary_path.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n")
