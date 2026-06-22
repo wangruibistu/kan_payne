@@ -12,9 +12,8 @@ download_one() {
   local output_dir="$2"
   (
     cd "${output_dir}"
-    wget -c --content-disposition --trust-server-names \
-      --tries=0 --timeout=60 --waitretry=15 --read-timeout=120 \
-      --progress=dot:giga "${url}"
+    curl -L -J -O --fail --retry 10 --retry-delay 10 \
+      --connect-timeout 60 --max-time 900 "${url}"
   )
 }
 

@@ -80,7 +80,7 @@ def iter_catalog_rows(path: Path):
             "filename": parts[1],
             "md5": parts[2],
             "filesize": size,
-            "url": parts[4],
+            "url": parts[4].replace("+", "%2B"),
             **labels,
         }
 
